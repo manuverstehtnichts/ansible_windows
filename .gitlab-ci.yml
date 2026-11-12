@@ -5,10 +5,13 @@ stages:
 
 deploy_ansible:
   stage: deploy
-  tags:
-    - ansible_windows
-  only:
-    - main
+  tags: [homelab]
+  # Nur manuell: zielt auf einen Windows-Client (192.168.1.138), nicht auf das Homelab.
+  # Benötigt die CI-Variable ANSIBLE_SSH_KEY (fehlt aktuell) + ANSIBLE_VAULT_PASSWORD.
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+      allow_failure: true
   before_script:
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
     - eval $(ssh-agent -s)
